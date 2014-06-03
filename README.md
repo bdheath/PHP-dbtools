@@ -41,6 +41,11 @@ Then get the primary key value of the record you just inserted:
   $primary_key_value = $db->lastInsertId();
 ```
 
+Or correctly escape a string for the database. PHP's mysql_real_escape_string() function can be fairly slow; this caches the results. 
+```php
+  $escaped_string = $db->esc("STRING");
+```
+
 Caching
 -------
 
