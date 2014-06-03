@@ -38,7 +38,8 @@ require_once(dirname(__FILE__) . '/incl-cache.php');
 			cacheNext($TTL)	- Cache only the next query (STILL TO BE IMPLEEMNTED)
 			noCacheNext()		- Do NOT cache the next query. STILL TO BE IMPLEMENTED.
 		MANAGEMENT (Dealing with connections, errors, etc.)
-			escape()			- Clean inputs
+			esc()				- Clean inputs (mysql_real_escape_string over this connection)
+								  Still need to implement caching on this
 			close()				- Close the currenct connection
 			isConnected()		- Checks whether the database connection is open
 								  Attempts to connect if not connected
@@ -505,10 +506,26 @@ require_once(dirname(__FILE__) . '/incl-cache.php');
 		}
 	
 		public function esc($term) {
-			$this->checkConnection();
-			return mysql_real_escape_string($term, $this->link);
+			$this->_cacheUsed = false;
+			if($this->_cache) {
+				if($this->_objectCache->cacheRead('Query',$term,$this->_cacheTimer)) {
+					$this->_queryCountCached++;
+					$this->_cacheUsed = true;
+					return $this->_objectCache->cachedValue();
+				} else {
+					$this->checkConnection();
+					$data = mysql_real_escape_string($term, $this->link);
+					$this->_objectCache->cacheWrite($data);
+					return $data;
+				}
+			} else {
+				$this->checkConnection();
+				$data = mysql_real_escape_string($term, $this->link);
+				return $data;
+			}
 		}
 	
 	}
 
+	
 ?>

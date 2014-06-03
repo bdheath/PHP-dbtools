@@ -84,7 +84,7 @@
 	class simpleCache {
 	
 		private $_cachePath = "/cache/";			// relative path to cache files
-		private $_defaultUpdateTime;	// default time of 24 hours
+		private $_defaultUpdateTime;				// default time of 24 hours
 		private $_cacheFileName;
 		private $_updateTime;
 		private $_enabled = true;
