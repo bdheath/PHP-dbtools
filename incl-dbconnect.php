@@ -77,6 +77,7 @@ require_once(dirname(__FILE__) . '/incl-cache.php');
 		private $_numRows;
 		private $_dbSphinx;
 		private $_optimize = false;
+		private $_charset = '';
 		public $link;
 
 		public function __construct() {
@@ -338,6 +339,9 @@ require_once(dirname(__FILE__) . '/incl-cache.php');
 					$this->link = @mysql_pconnect($this->_dbHost);
 				} else {
 					$this->link = mysql_connect($this->_dbHost, $this->_dbUser, $this->_dbPassword, false, 65536);
+					if($this->_charset <> '') {
+						mysql_set_charset($this->_charset);
+					}
 				}
 				$this->_isConnected = true;
 			}
@@ -523,6 +527,11 @@ require_once(dirname(__FILE__) . '/incl-cache.php');
 				$data = mysql_real_escape_string($term, $this->link);
 				return $data;
 			}
+		}
+		
+		// Set the chracter encoding for this connection
+		public function charset($charset) {
+			$this->_charset = $charset;
 		}
 	
 	}
